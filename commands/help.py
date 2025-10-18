@@ -61,6 +61,11 @@ class HelpSelect(Select):
                 value="Invite Amethis to your server",
                 inline=False
             )
+            embed.add_field(
+                name="/poll",
+                value="Create customizable polls with advanced options",
+                inline=False
+)
             
         elif category == "legal":
             embed = discord.Embed(
