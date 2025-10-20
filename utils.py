@@ -3,9 +3,19 @@ from discord import app_commands
 
 async def is_admin(interaction: discord.Interaction) -> bool:
     """Check if user has administrator permissions or is in admin roles"""
+    # If this is a DM context, always return True
+    if interaction.guild is None:
+        return True
+    
+    # Check if user is a Member (should always be true in guild context, but safe check)
+    if not isinstance(interaction.user, discord.Member):
+        return False
+    
+    # Check if user has administrator permissions
     if interaction.user.guild_permissions.administrator:
         return True
     
+    # Check if user has any admin roles
     admin_roles = await get_admin_roles(interaction.guild)
     user_roles = [role.id for role in interaction.user.roles]
     

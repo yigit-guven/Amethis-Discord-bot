@@ -20,14 +20,20 @@ class HelpSelect(Select):
             )
         ]
         if is_user_admin:
-            options.append(
+            options.extend([
                 discord.SelectOption(
                     label="Administration",
                     description="Server administration commands",
                     emoji="<:shield:1427515556113809479>",
                     value="administration"
+                ),
+                discord.SelectOption(
+                    label="Registration Management",
+                    description="User registration management commands",
+                    emoji="<:tick:1427514481650565251>",
+                    value="registration"
                 )
-            )
+            ])
         
         super().__init__(placeholder="Choose a category...", options=options, min_values=1, max_values=1)
 
@@ -65,7 +71,12 @@ class HelpSelect(Select):
                 name="/poll",
                 value="Create customizable polls with advanced options",
                 inline=False
-)
+            )
+            embed.add_field(
+                name="/register",
+                value="Complete the server registration process",
+                inline=False
+            )
             
         elif category == "legal":
             embed = discord.Embed(
@@ -123,6 +134,44 @@ class HelpSelect(Select):
                 inline=False
             )
         
+        elif category == "registration":
+            embed = discord.Embed(
+                title="<:tick:1427514481650565251> Registration Management Commands",
+                description="**User registration management commands:**",
+                color=discord.Color.purple()
+            )
+            
+            embed.add_field(
+                name="/setupregistration",
+                value="Set up the registration system for this server",
+                inline=False
+            )
+            embed.add_field(
+                name="/addregistrationquestion",
+                value="Add a custom question to the registration form",
+                inline=False
+            )
+            embed.add_field(
+                name="/removeregistrationquestion",
+                value="Remove a question from the registration form",
+                inline=False
+            )
+            embed.add_field(
+                name="/addregistrationmanager",
+                value="Add a user as registration manager",
+                inline=False
+            )
+            embed.add_field(
+                name="/removeregistrationmanager",
+                value="Remove a user from registration managers",
+                inline=False
+            )
+            embed.add_field(
+                name="<:pin:1427805351083905127> Note",
+                value="These commands are only available for server administrators and custom admin roles.",
+                inline=False
+            )
+        
         embed.set_footer(text="Select another category to explore more commands")
         
         await interaction.response.edit_message(embed=embed, view=HelpView(is_user_admin=await is_admin(interaction)))
@@ -144,7 +193,7 @@ async def help(interaction: discord.Interaction):
     
     categories_text = "• **General Commands** - Core bot functionality\n• **Legal Information** - Policies and terms"
     if is_user_admin:
-        categories_text += "\n• **Administration** - Server administration commands"
+        categories_text += "\n• **Administration** - Server administration commands\n• **Registration Management** - User registration management (Admin Only)"
     
     embed.add_field(
         name="<:hashtag:1427516016354660414> Categories",
@@ -158,4 +207,3 @@ async def help(interaction: discord.Interaction):
 
 def setup(bot):
     bot.tree.add_command(help)
-    print("Help command loaded")
